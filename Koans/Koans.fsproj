@@ -43,6 +43,8 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="Program.fs" />
+    <None Include="Koans.fsx" />
+    <None Include="Lesson0_TestRunner.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
