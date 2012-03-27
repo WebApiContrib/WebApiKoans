@@ -45,3 +45,6 @@ async {
   let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
   test <@ __ = body @>
 } |> Async.RunSynchronously
+
+cleanup()
+

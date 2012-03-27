@@ -26,3 +26,6 @@ async {
   let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
   test <@ "Hello, ApiController!" = body @>
 } |> Async.RunSynchronously
+
+cleanup()
+
