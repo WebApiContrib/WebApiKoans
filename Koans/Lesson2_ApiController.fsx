@@ -1,4 +1,4 @@
-﻿(* Lesson 1: Learn about ApiControllers
+﻿(* Lesson 2: Learn about ApiControllers
 
 The standard api for building applications with Web API
 is through the ApiController. This implements the IHttpController
@@ -15,6 +15,7 @@ open Swensen.Unquote.Assertions
 module ``Simple Hello world controller`` =
 
   // To use an ApiController, you need to define a subclass.
+  // We will extend and reuse this type throughout this set of koans.
   type TestController() =
     inherit ApiController()
 
@@ -44,7 +45,31 @@ module ``Simple Hello world controller`` =
   async {
     let! response = Async.AwaitTask <| client.GetAsync("http://example.org/api/test")
     let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
-    test <@ "Hello, ApiController!" = body @>
+    test <@ "\"Hello, ApiController!\"" = body @>
   } |> Async.RunSynchronously
+
+  reset()
+
+module ``Create an echo controller`` =
+
+  type TestController() =
+    inherit ApiController()
+
+    // We'll amend our existing controller with a Post method
+    // that will return whatever is POSTed. 
+    member x.Post() = __
+
+  controllerFactory.Register<TestController>()
+  config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
+
+  // Now send a POST request from the client to retrieve the result.
+  async {
+    let content = new StringContent("Hello, ApiController!")
+    let! response = Async.AwaitTask <| client.PostAsync("http://example.org/api/test", content)
+    let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
+    test <@ "\"Hello, ApiController!\"" = body @>
+  } |> Async.RunSynchronously
+
+  reset()
 
 cleanup()
