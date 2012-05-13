@@ -25,6 +25,7 @@ open System.Web.Http
 open System.Web.Http.Controllers
 open System.Web.Http.Dispatcher
 
+// NOTE: Thanks to Kiran Challa of Microsoft for this code. (http://forums.asp.net/t/1787356.aspx/1?In+memory+host+with+formatting)
 type HttpContentSerializationHandler =
   inherit DelegatingHandler
   new () = { inherit DelegatingHandler() }
