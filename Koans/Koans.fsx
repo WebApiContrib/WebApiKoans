@@ -6,7 +6,7 @@ module Koans
 #I @"..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40"
 #I @"..\packages\System.Json.4.0.20126.16343\lib\net40"
 #I @"..\packages\AspNetWebApi.Core.4.0.20126.16343\lib\net40"
-#I @"..\packages\Unquote.2.1.0\lib\net40"
+#I @"..\packages\Unquote.2.1.1\lib\net40"
 
 #r "System.Json.dll"
 #r "System.Net.Http.dll"
