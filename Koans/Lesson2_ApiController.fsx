@@ -72,4 +72,46 @@ module ``Create an echo controller`` =
 
   reset()
 
+module ``Are you sure you made an echo controller`` =
+  open System.IO
+  open System.Net
+
+  type TestController() =
+    inherit ApiController()
+
+    // Contrary to what you might have expected, copying a request body is not quite as simple
+    // as it may at first appear. The previous step can be successfully completed by returning
+    // x.Request.Content.ReadAsStreamAsync() or x.Request.Content.ReadAsStringAsync().
+    // However, if you add a test to check the content type of the request and the response, you
+    // will find the request submitted text/plain, and the response submitted application/json.
+    // Those certainly look the same, but they are not. Also, returning x.Request.Content
+    // will throw an ObjectDisposedException as the request content is disposed before the
+    // response completes. You have to copy the content to a new content.
+    member x.Post() =
+      let request = x.Request
+      let stream = new MemoryStream()
+      request.Content.CopyToAsync(stream).ContinueWith(fun _ ->
+        // Don't miss the importance of resetting the position on the stream.
+        // If you don't know what this does, try commenting it out.
+        stream.Position <- 0L
+        let content = new StreamContent(stream)
+        for header in request.Content.Headers do
+          content.Headers.AddWithoutValidation(header.Key, header.Value)
+        new HttpResponseMessage(HttpStatusCode.OK, Content = content))
+
+  controllerFactory.Register<TestController>()
+  config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
+
+  // Now send a POST request from the client to retrieve the result.
+  async {
+    let content = new StringContent("Hello, ApiController!")
+    let! response = Async.AwaitTask <| client.PostAsync("http://example.org/api/test", content)
+    let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
+    test <@ "Hello, ApiController!" = body @>
+    // Note that this passes for a test of the request's content type as we copied the value above.
+    test <@ __ = response.Content.Headers.ContentType.MediaType @>
+  } |> Async.RunSynchronously
+
+  reset()
+
 cleanup()
