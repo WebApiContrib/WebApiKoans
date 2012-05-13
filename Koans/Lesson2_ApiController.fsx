@@ -67,7 +67,7 @@ module ``Create an echo controller`` =
     let content = new StringContent("Hello, ApiController!")
     let! response = Async.AwaitTask <| client.PostAsync("http://example.org/api/test", content)
     let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
-    test <@ "\"Hello, ApiController!\"" = body @>
+    test <@ "Hello, ApiController!" = body @>
   } |> Async.RunSynchronously
 
   reset()
