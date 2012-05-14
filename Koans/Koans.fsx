@@ -26,12 +26,8 @@ open System.Web.Http.Controllers
 open System.Web.Http.Dispatcher
 
 // NOTE: Thanks to Kiran Challa of Microsoft for this code. (http://forums.asp.net/t/1787356.aspx/1?In+memory+host+with+formatting)
-type HttpContentSerializationHandler =
-  inherit DelegatingHandler
-  new () = { inherit DelegatingHandler() }
-  new (innerHandler) = { inherit DelegatingHandler(innerHandler) }
-
-  static member private ConvertToStreamContent(originalContent: HttpContent) =
+let serializationHandler =
+  let convertToStreamContent(originalContent: HttpContent) =
     if originalContent = null then null else
     if originalContent :? StreamContent then originalContent :?> StreamContent else
     let ms = new System.IO.MemoryStream()
@@ -41,13 +37,13 @@ type HttpContentSerializationHandler =
     for header in originalContent.Headers do
       streamContent.Headers.AddWithoutValidation(header.Key, header.Value)
     streamContent
-
-  override x.SendAsync(request, cancellationToken) =
-    request.Content <- HttpContentSerializationHandler.ConvertToStreamContent(request.Content)
-    base.SendAsync(request, cancellationToken).ContinueWith((fun (responseTask: Task<HttpResponseMessage>) ->
-        let response = responseTask.Result
-        response.Content <- HttpContentSerializationHandler.ConvertToStreamContent(response.Content)
-        response), cancellationToken)
+  { new DelegatingHandler() with
+      override x.SendAsync(request, cancellationToken) =
+        request.Content <- convertToStreamContent(request.Content)
+        base.SendAsync(request, cancellationToken).ContinueWith((fun (responseTask: Task<HttpResponseMessage>) ->
+            let response = responseTask.Result
+            response.Content <- convertToStreamContent(response.Content)
+            response), cancellationToken) }
 
 //  override x.SendAsync(request, cancellationToken) =
 //    request.Content <- 
@@ -76,7 +72,7 @@ type KoansControllerFactory(config) =
       (controller :?> ApiController).Dispose()
 
 let config = new HttpConfiguration()
-config.MessageHandlers.Add(new HttpContentSerializationHandler())
+config.MessageHandlers.Add(serializationHandler)
 let controllerFactory = KoansControllerFactory(config)
 config.ServiceResolver.SetService(typeof<IHttpControllerFactory>, controllerFactory)
 
@@ -88,8 +84,8 @@ let reset() =
   config.Routes.Clear()
 
 let cleanup() =
-  client.Dispose()
-  server.Dispose()
   controllerFactory.Clear()
-  config.Dispose()
-
+  if client <> null then client.Dispose()
+  if server <> null then server.Dispose()
+  if config <> null then config.Dispose()
+  if serializationHandler <> null then serializationHandler.Dispose()
