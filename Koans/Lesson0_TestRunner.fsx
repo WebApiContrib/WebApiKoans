@@ -10,15 +10,11 @@ open System.Web.Http
 open System.Threading.Tasks
 open Swensen.Unquote.Assertions
 
-// To create an application, we first need to subclass DelegatingHandler.
-type HttpHandler() =
-  inherit DelegatingHandler()
-
 // Now we can create an `HttpHandler` to return a response of `"Hello, world!"`.
 // `HttpMessageHandler`s always return a `Task<'T>` from the `SendAsync` method,
 // but since we don't need the async response, we'll just use `TaskCompletionSource`.
 let handler =
-  { new HttpHandler() with
+  { new DelegatingHandler() with
       override x.SendAsync(request, cancellationToken) =
         let response = new HttpResponseMessage(Content = new StringContent("Hello, world!"))
         let tcs = new TaskCompletionSource<_>()
@@ -47,4 +43,3 @@ async {
 } |> Async.RunSynchronously
 
 cleanup()
-
