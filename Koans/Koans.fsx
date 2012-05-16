@@ -16,6 +16,7 @@ module Koans
 #r "Unquote.dll"
 
 let __ = "Please fill in the blank"
+let ___ = async.Return "Please fill in the blank"
 
 open System
 open System.Collections.Generic
@@ -45,9 +46,6 @@ let serializationHandler =
             response.Content <- convertToStreamContent(response.Content)
             response), cancellationToken) }
 
-//  override x.SendAsync(request, cancellationToken) =
-//    request.Content <- 
-
 type KoansControllerFactory(config) =
   let controllers = Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
 
@@ -72,7 +70,6 @@ type KoansControllerFactory(config) =
       (controller :?> ApiController).Dispose()
 
 let config = new HttpConfiguration()
-config.MessageHandlers.Add(serializationHandler)
 let controllerFactory = KoansControllerFactory(config)
 config.ServiceResolver.SetService(typeof<IHttpControllerFactory>, controllerFactory)
 
