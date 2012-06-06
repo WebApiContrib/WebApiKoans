@@ -1,18 +1,20 @@
 ﻿[<AutoOpen>]
 module Koans
 
-#I @"..\packages\System.Net.Http.2.0.20126.16343\lib\net40"
-#I @"..\packages\System.Net.Http.Formatting.4.0.20126.16343\lib\net40"
-#I @"..\packages\System.Web.Http.Common.4.0.20126.16343\lib\net40"
-#I @"..\packages\System.Json.4.0.20126.16343\lib\net40"
-#I @"..\packages\AspNetWebApi.Core.4.0.20126.16343\lib\net40"
-#I @"..\packages\Unquote.2.1.1\lib\net40"
+#I @"..\packages\Microsoft.Net.Http.2.0.20505.0\lib\net40"
+#I @"..\packages\Microsoft.AspNet.WebApi.Core.4.0.20505.0\lib\net40"
+#I @"..\packages\Microsoft.AspNet.WebApi.Client.4.0.20505.0\lib\net40"
+#I @"..\packages\ImpromptuInterface.5.6.7\lib\net40"
+#I @"..\packages\ImpromptuInterface.FSharp.1.1.0\lib\net40"
+#I @"..\packages\Newtonsoft.Json.4.5.6\lib\net40"
+#I @"..\packages\Unquote.2.2.1\lib\net40"
 
-#r "System.Json.dll"
 #r "System.Net.Http.dll"
 #r "System.Net.Http.Formatting.dll"
-#r "System.Web.Http.Common.dll"
 #r "System.Web.Http.dll"
+#r "ImpromptuInterface.dll"
+#r "ImpromptuInterface.FSharp.dll"
+#r "Newtonsoft.Json.dll"
 #r "Unquote.dll"
 
 let __ = "Please fill in the blank"
@@ -24,7 +26,44 @@ open System.Net.Http
 open System.Threading.Tasks
 open System.Web.Http
 open System.Web.Http.Controllers
+open System.Web.Http.Dependencies
 open System.Web.Http.Dispatcher
+
+// This monstrosity is required to detect controllers when running in FSI. In a console or web project, this is unnecessary.
+[<AllowNullLiteral>]
+type DictionaryDependencyResolver() as x =
+  let mutable store = new Dictionary<Type, obj[]>()
+  do store.Add(typeof<IHttpControllerActivator>, [| x |])
+
+  member x.RegisterInstance(key, value) =
+    if store.ContainsKey(key) then
+      store.[key] <- [| yield value; yield! store.[key] |]
+    else store.Add(key, [| value |])
+
+  member x.RegisterInstances(key, values) = store.Add(key, values)
+
+  member x.Dispose() =
+    store.Clear()
+    store <- null
+
+  interface IDependencyResolver with
+    member x.BeginScope() = x :> IDependencyScope
+
+    member x.GetService(serviceType) =
+      if store.ContainsKey(serviceType) then
+        store.[serviceType] |> Seq.head
+      else null
+
+    member x.GetServices(serviceType) =
+      if store.ContainsKey(serviceType) then
+        store.[serviceType] |> Array.toSeq
+      else Seq.empty
+
+    member x.Dispose() = x.Dispose()
+
+  interface IHttpControllerActivator with
+    member x.Create(request, controllerDescriptor, controllerType) =
+      store.[controllerType] |> Seq.head :?> IHttpController
 
 // NOTE: Thanks to Kiran Challa of Microsoft for this code. (http://forums.asp.net/t/1787356.aspx/1?In+memory+host+with+formatting)
 let serializationHandler =
@@ -36,52 +75,28 @@ let serializationHandler =
     ms.Position <- 0L
     let streamContent = new StreamContent(ms)
     for header in originalContent.Headers do
-      streamContent.Headers.AddWithoutValidation(header.Key, header.Value)
+      streamContent.Headers.TryAddWithoutValidation(header.Key, header.Value) |> ignore
     streamContent
   { new DelegatingHandler() with
       override x.SendAsync(request, cancellationToken) =
         request.Content <- convertToStreamContent(request.Content)
         base.SendAsync(request, cancellationToken).ContinueWith((fun (responseTask: Task<HttpResponseMessage>) ->
-            let response = responseTask.Result
-            response.Content <- convertToStreamContent(response.Content)
-            response), cancellationToken) }
-
-type KoansControllerFactory(config) =
-  let controllers = Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase)
-
-  member x.Register<'a when 'a :> ApiController>() =
-    let _type = typeof<'a>
-    let name = _type.Name.Replace("Controller", "")
-    controllers.[name] <- _type
-
-  member x.Clear() = controllers.Clear()
-
-  interface IHttpControllerFactory with
-
-    member x.CreateController(controllerContext, name) =
-      match controllers.TryGetValue(name) with
-      | true, _type ->
-          controllerContext.ControllerDescriptor <- HttpControllerDescriptor(config, name, _type)
-          controllerContext.Controller <- controllerContext.ControllerDescriptor.HttpControllerActivator.Create(controllerContext, _type)
-          controllerContext.Controller
-      | _ -> null
-
-    member x.ReleaseController(controller) =
-      (controller :?> ApiController).Dispose()
+          let response = responseTask.Result
+          response.Content <- convertToStreamContent(response.Content)
+          response), cancellationToken) }
 
 let config = new HttpConfiguration()
-let controllerFactory = KoansControllerFactory(config)
-config.ServiceResolver.SetService(typeof<IHttpControllerFactory>, controllerFactory)
+let resolver = new DictionaryDependencyResolver()
+config.DependencyResolver <- resolver
+config.Services.Replace(typeof<IHttpControllerActivator>, resolver)
 
 let server = new HttpServer(config)
 let client = new HttpClient(server)
 
 let reset() =
-  controllerFactory.Clear()
   config.Routes.Clear()
 
 let cleanup() =
-  controllerFactory.Clear()
   if client <> null then client.Dispose()
   if server <> null then server.Dispose()
   if config <> null then config.Dispose()

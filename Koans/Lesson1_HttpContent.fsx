@@ -10,6 +10,7 @@ based on the provided `MediaTypeFormatter`.
 #load "Koans.fsx"
 
 open System.Net.Http
+open Newtonsoft.Json.Linq
 open Swensen.Unquote.Assertions
 
 module ``Reading string content`` =
@@ -30,6 +31,22 @@ module ``Reading string content`` =
   async {
     let! body = Async.AwaitTask result
     test <@ __ = body @>
+  } |> Async.RunSynchronously
+
+  reset()
+
+module ``Reading form data`` =
+
+  let content = new StringContent("a[]=1&a[]=5&a[]=333", System.Text.Encoding.UTF8, "application/x-www-form-urlencoded")
+
+//  let result = content.ReadAsFormDataAsync()
+  let result = content.ReadAsAsync<JObject>()
+  
+  // Verify that the data we read was the same as we submitted to the `StringContent`.
+  async {
+    let! body = Async.AwaitTask result
+    let arr = body.["a"] :?> JArray
+    test <@ __ = arr.ToString() @>
   } |> Async.RunSynchronously
 
   reset()

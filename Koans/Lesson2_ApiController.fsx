@@ -31,11 +31,9 @@ module ``Respond to requests with ApiControllers`` =
 
     // You don't normally need to do this; it's required for running in FSI.
     // The `DefaultHttpControllerFactory` looks in the currently loaded assembly
-    // for all types implementing `IHttpController`. Here, we are using a
-    // custom controller factory and registering our `TestController` type.
-    // The custom controller factory can be found in Koans.fsx, if you are
-    // curious to see more about implementing a custom factory.
-    controllerFactory.Register<TestController>()
+    // for all types implementing `IHttpController`. Therefore we will add
+    // our koans controllers directly to the `config.Services`.
+    resolver.RegisterInstance(typeof<TestController>, new TestController())
 
     // Controllers can't be found without routing. Here, we use a very generic
     // uri template and map it using the `MapHttpRoute` extension method.
@@ -61,7 +59,7 @@ module ``Respond to requests with ApiControllers`` =
       // that will return whatever is POSTed. 
       member x.Post() = __
 
-    controllerFactory.Register<TestController>()
+    resolver.RegisterInstance(typeof<TestController>, new TestController())
     config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
 
     // Now send a POST request from the client to retrieve the result.
@@ -98,10 +96,10 @@ module ``Respond to requests with ApiControllers`` =
           stream.Position <- 0L
           let content = new StreamContent(stream)
           for header in request.Content.Headers do
-            content.Headers.AddWithoutValidation(header.Key, header.Value)
+            content.Headers.TryAddWithoutValidation(header.Key, header.Value) |> ignore
           new HttpResponseMessage(HttpStatusCode.OK, Content = content))
 
-    controllerFactory.Register<TestController>()
+    resolver.RegisterInstance(typeof<TestController>, new TestController())
     config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
 
     // Now send a POST request from the client to retrieve the result.
@@ -117,3 +115,4 @@ module ``Respond to requests with ApiControllers`` =
     reset()
 
 cleanup()
+
