@@ -1,10 +1,10 @@
-﻿(* Lesson 1: Learn about HttpContent
+﻿(* Lesson 1: Learn about HttpContent and MediaTypeFormatters
 
 The body of the request and response can take many forms.
 `System.Net.Http` defines `HttpContent` as the base for these representations.
 `System.Net.Http` also includes several other built-in types,
 as well as an `ObjectContent` that will serialize any .NET object
-based on the provided media type/formatter.
+based on the provided `MediaTypeFormatter`.
 *)
 
 #load "Koans.fsx"

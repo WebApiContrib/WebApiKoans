@@ -45,9 +45,10 @@
     <None Include="packages.config" />
     <Compile Include="Program.fs" />
     <None Include="Koans.fsx" />
-    <None Include="Lesson0_TestRunner.fsx" />
     <None Include="Lesson1_HttpContent.fsx" />
     <None Include="Lesson2_ApiController.fsx" />
+    <None Include="Lesson3_HttpMessageHandler.fsx" />
+    <None Include="Lesson4_HttpClient.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
