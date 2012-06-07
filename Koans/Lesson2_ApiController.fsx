@@ -88,8 +88,8 @@ module ``Respond to requests with ApiControllers`` =
       // Those certainly look the same, but they are not. Also, returning x.Request.Content
       // will throw an ObjectDisposedException as the request content is disposed before the
       // response completes. You have to copy the content to a new content.
-      member x.Post() =
-        let request = x.Request
+      member x.Post(request: HttpRequestMessage) =
+        printfn "Received %A" request
         let stream = new MemoryStream()
         request.Content.CopyToAsync(stream).ContinueWith(fun _ ->
           // Don't miss the importance of resetting the position on the stream.

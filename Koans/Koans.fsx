@@ -31,7 +31,7 @@ open System.Web.Http.Dispatcher
 
 // This monstrosity is required to detect controllers when running in FSI. In a console or web project, this is unnecessary.
 [<AllowNullLiteral>]
-type DictionaryDependencyResolver() as x =
+type DictionaryResolver() as x =
   let mutable store = new Dictionary<Type, obj[]>()
   do store.Add(typeof<IHttpControllerActivator>, [| x |])
 
@@ -39,31 +39,32 @@ type DictionaryDependencyResolver() as x =
     if store.ContainsKey(key) then
       store.[key] <- [| yield value; yield! store.[key] |]
     else store.Add(key, [| value |])
-
   member x.RegisterInstances(key, values) = store.Add(key, values)
-
+  member x.Reset() =
+    store.Clear()
+    store.Add(typeof<IHttpControllerActivator>, [| x |])
   member x.Dispose() =
     store.Clear()
     store <- null
 
   interface IDependencyResolver with
     member x.BeginScope() = x :> IDependencyScope
-
     member x.GetService(serviceType) =
       if store.ContainsKey(serviceType) then
         store.[serviceType] |> Seq.head
       else null
-
     member x.GetServices(serviceType) =
       if store.ContainsKey(serviceType) then
         store.[serviceType] |> Array.toSeq
       else Seq.empty
-
     member x.Dispose() = x.Dispose()
 
   interface IHttpControllerActivator with
     member x.Create(request, controllerDescriptor, controllerType) =
-      store.[controllerType] |> Seq.head :?> IHttpController
+      printfn "Looking for %A" controllerType
+      let controller = store.[controllerType] |> Seq.head :?> IHttpController
+      printfn "Found controller of type %s" <| controller.GetType().Name
+      controller
 
 // NOTE: Thanks to Kiran Challa of Microsoft for this code. (http://forums.asp.net/t/1787356.aspx/1?In+memory+host+with+formatting)
 let serializationHandler =
@@ -85,16 +86,15 @@ let serializationHandler =
           response.Content <- convertToStreamContent(response.Content)
           response), cancellationToken) }
 
-let config = new HttpConfiguration()
-let resolver = new DictionaryDependencyResolver()
-config.DependencyResolver <- resolver
-config.Services.Replace(typeof<IHttpControllerActivator>, resolver)
-
+let resolver = new DictionaryResolver()
+let config = new HttpConfiguration(DependencyResolver = resolver)
+config.Services.Add(typeof<IHttpControllerActivator>, resolver)
 let server = new HttpServer(config)
 let client = new HttpMessageInvoker(server)
 let cts = new System.Threading.CancellationTokenSource()
 
 let reset() =
+  resolver.Reset()
   config.Routes.Clear()
 
 let cleanup() =
