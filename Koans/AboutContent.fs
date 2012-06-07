@@ -1,5 +1,4 @@
-﻿[<AutoOpen>]
-module Koans.Lesson1.Content
+﻿module Koans.AboutContent
 (* Lesson 1: Learn about HttpContent and MediaTypeFormatters
 
 The body of the request and response can take many forms.
@@ -14,6 +13,7 @@ open Koans.Core
 open Newtonsoft.Json.Linq
 open Swensen.Unquote.Assertions
 
+[<Koan>]
 let ``Reading string content``() =
 
   // Arguably the simplest of the `HttpContent` types is `StringContent`.
@@ -36,6 +36,7 @@ let ``Reading string content``() =
 
   reset()
 
+[<Koan>]
 let ``Reading form data``() =
 
   let content = new StringContent("a[]=1&a[]=5&a[]=333", System.Text.Encoding.UTF8, "application/x-www-form-urlencoded")

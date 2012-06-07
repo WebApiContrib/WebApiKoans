@@ -30,6 +30,10 @@ open System.Web.Http.Controllers
 open System.Web.Http.Dependencies
 open System.Web.Http.Dispatcher
 
+[<AttributeUsage(AttributeTargets.Method, AllowMultiple = false)>]
+type KoanAttribute() =
+  inherit Attribute()
+
 // NOTE: Thanks to Kiran Challa of Microsoft for this code. (http://forums.asp.net/t/1787356.aspx/1?In+memory+host+with+formatting)
 let serializationHandler =
   let convertToStreamContent(originalContent: HttpContent) =

@@ -1,4 +1,4 @@
-﻿module Koans.Lesson3.Handlers
+﻿module Koans.AboutMessageHandlers
 (* Lesson 3: Build APIs directly with instances of HttpMessageHandler.
 
 In order to run our tests, we first need a test runner.
@@ -10,6 +10,7 @@ open System.Threading.Tasks
 open Koans.Core
 open Swensen.Unquote.Assertions
 
+[<Koan>]
 let ``Respond to a GET request with a DelegatingHandler``() =
 
   // Now we can create an `HttpHandler` to return a response of `"Hello, world!"`.

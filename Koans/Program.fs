@@ -10,14 +10,14 @@ let main args =
   
   try
     try
-      Lesson1.Content.``Reading string content``()
-      Lesson1.Content.``Reading form data``()
+      AboutContent.``Reading string content``()
+      AboutContent.``Reading form data``()
 
-      Lesson2.Controllers.``Simple Hello world controller``()
-      Lesson2.Controllers.``Create an echo controller``()
-      Lesson2.Controllers.``Are you sure you made an echo controller``()
+      AboutControllers.``Simple Hello world controller``()
+      AboutControllers.``Create an echo controller``()
+      AboutControllers.``Are you sure you made an echo controller``()
 
-      Lesson3.Handlers.``Respond to a GET request with a DelegatingHandler``()
+      AboutMessageHandlers.``Respond to a GET request with a DelegatingHandler``()
     with e -> printfn "%A" e
   finally cleanup()
 

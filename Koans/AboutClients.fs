@@ -1,4 +1,4 @@
-﻿module Koans.Lesson4.Client
+﻿module Koans.AboutClients
 (* Lesson 4: Consume APIs with HttpClient
 
 You consume web apis with the `System.Net.Http.HttpClient`. This type provides methods

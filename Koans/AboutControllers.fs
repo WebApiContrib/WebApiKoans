@@ -1,4 +1,4 @@
-﻿namespace Koans.Lesson2
+﻿namespace Koans
 (* Lesson 2: Build APIs with ApiControllers
 
 The standard api for building applications with Web API
@@ -55,8 +55,9 @@ type TestFixedController() =
       new HttpResponseMessage(HttpStatusCode.OK, Content = content))
 
 [<AutoOpen>]
-module Controllers =
+module AboutControllers =
 
+  [<Koan>]
   let ``Simple Hello world controller``() =
     // Controllers can't be found without routing. Here, we use a very generic
     // uri template and map it using the `MapHttpRoute` extension method.
@@ -74,6 +75,7 @@ module Controllers =
 
     reset()
 
+  [<Koan>]
   let ``Create an echo controller``() =
     config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
 
@@ -88,6 +90,7 @@ module Controllers =
 
     reset()
 
+  [<Koan>]
   let ``Are you sure you made an echo controller``() =
     config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
 

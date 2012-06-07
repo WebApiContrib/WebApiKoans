@@ -44,10 +44,10 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Compile Include="Koans.fs" />
-    <Compile Include="Lesson1_HttpContent.fs" />
-    <Compile Include="Lesson2_ApiController.fs" />
-    <Compile Include="Lesson3_HttpMessageHandler.fs" />
-    <Compile Include="Lesson4_HttpClient.fs" />
+    <Compile Include="AboutContent.fs" />
+    <Compile Include="AboutControllers.fs" />
+    <Compile Include="AboutMessageHandlers.fs" />
+    <Compile Include="AboutClients.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
