@@ -39,7 +39,8 @@ module ``Respond to a GET request with a DelegatingHandler`` =
 
   // Now send a GET request from the client to retrieve the result.
   async {
-    let! response = Async.AwaitTask <| client.GetAsync("http://example.org/")
+    use request = new HttpRequestMessage(HttpMethod.Get, "http://example.org/api/test")
+    let! response = Async.AwaitTask <| client.SendAsync(request, cts.Token)
     let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
     test <@ __ = body @>
   } |> Async.RunSynchronously

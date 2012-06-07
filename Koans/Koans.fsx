@@ -91,12 +91,14 @@ config.DependencyResolver <- resolver
 config.Services.Replace(typeof<IHttpControllerActivator>, resolver)
 
 let server = new HttpServer(config)
-let client = new HttpClient(server)
+let client = new HttpMessageInvoker(server)
+let cts = new System.Threading.CancellationTokenSource()
 
 let reset() =
   config.Routes.Clear()
 
 let cleanup() =
+  if cts <> null then cts.Cancel(); cts.Dispose()
   if client <> null then client.Dispose()
   if server <> null then server.Dispose()
   if config <> null then config.Dispose()

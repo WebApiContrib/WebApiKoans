@@ -43,7 +43,8 @@ module ``Respond to requests with ApiControllers`` =
 
     // Now send a GET request from the client to retrieve the result.
     async {
-      let! response = Async.AwaitTask <| client.GetAsync("http://example.org/api/test")
+      use request = new HttpRequestMessage(HttpMethod.Get, "http://example.org/api/test")
+      let! response = Async.AwaitTask <| client.SendAsync(request, cts.Token)
       let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
       test <@ "\"Hello, ApiController!\"" = body @>
     } |> Async.RunSynchronously
@@ -64,8 +65,8 @@ module ``Respond to requests with ApiControllers`` =
 
     // Now send a POST request from the client to retrieve the result.
     async {
-      let content = new StringContent("Hello, ApiController!")
-      let! response = Async.AwaitTask <| client.PostAsync("http://example.org/api/test", content)
+      let request = new HttpRequestMessage(HttpMethod.Post, "http://example.org/api/test", Content = new StringContent("Hello, ApiController!"))
+      let! response = Async.AwaitTask <| client.SendAsync(request, cts.Token)
       let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
       test <@ "Hello, ApiController!" = body @>
     } |> Async.RunSynchronously
@@ -104,8 +105,8 @@ module ``Respond to requests with ApiControllers`` =
 
     // Now send a POST request from the client to retrieve the result.
     async {
-      let content = new StringContent("Hello, ApiController!")
-      let! response = Async.AwaitTask <| client.PostAsync("http://example.org/api/test", content)
+      let request = new HttpRequestMessage(HttpMethod.Post, "http://example.org/api/test", Content = new StringContent("Hello, ApiController!"))
+      let! response = Async.AwaitTask <| client.SendAsync(request, cts.Token)
       let! body = Async.AwaitTask <| response.Content.ReadAsStringAsync()
       test <@ "Hello, ApiController!" = body @>
       // Note that this passes for a test of the request's content type as we copied the value above.
