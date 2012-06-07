@@ -18,7 +18,7 @@ let main args =
       Lesson2.Controllers.``Are you sure you made an echo controller``()
 
       Lesson3.Handlers.``Respond to a GET request with a DelegatingHandler``()
-    with e -> printfn "%s" e.Message
+    with e -> printfn "%A" e
   finally cleanup()
 
   Console.ReadLine() |> ignore
