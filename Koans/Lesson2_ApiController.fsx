@@ -14,6 +14,14 @@ open Swensen.Unquote.Assertions
 
 module ``Respond to requests with ApiControllers`` =
 
+  let activator = config.Services.GetHttpControllerActivator()
+  printfn "%A" <| activator.GetType()
+  test <@ typeof<DictionaryResolver> = activator.GetType() @>
+
+  let activator2 = config.DependencyResolver.GetService(typeof<System.Web.Http.Dispatcher.IHttpControllerActivator>)
+  printfn "%A" <| activator2.GetType()
+  test <@ typeof<DictionaryResolver> = activator2.GetType() @>
+
   module ``Simple Hello world controller`` =
 
     // To use an ApiController, you need to define a subclass.
@@ -40,6 +48,8 @@ module ``Respond to requests with ApiControllers`` =
     // If you have worked with MVC, this will be very familiar. In a larger
     // project, this would most likely be defined in your Global.asax file.
     config.Routes.MapHttpRoute("Api", "api/{controller}") |> ignore
+
+    test <@ null <> config.Services.GetHttpControllerActivator().Create(null, null, typeof<TestController>) @>
 
     // Now send a GET request from the client to retrieve the result.
     async {
