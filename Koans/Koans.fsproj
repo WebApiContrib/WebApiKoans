@@ -43,12 +43,12 @@
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <Compile Include="Koans.fs" />
+    <Compile Include="Lesson1_HttpContent.fs" />
+    <Compile Include="Lesson2_ApiController.fs" />
+    <Compile Include="Lesson3_HttpMessageHandler.fs" />
+    <Compile Include="Lesson4_HttpClient.fs" />
     <Compile Include="Program.fs" />
-    <None Include="Koans.fsx" />
-    <None Include="Lesson1_HttpContent.fsx" />
-    <None Include="Lesson2_ApiController.fsx" />
-    <None Include="Lesson3_HttpMessageHandler.fsx" />
-    <None Include="Lesson4_HttpClient.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ImpromptuInterface">

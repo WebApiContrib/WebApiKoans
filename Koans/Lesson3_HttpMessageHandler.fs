@@ -1,16 +1,16 @@
-﻿(* Lesson 3: Build APIs directly with instances of HttpMessageHandler.
+﻿module Koans.Lesson3.Handlers
+(* Lesson 3: Build APIs directly with instances of HttpMessageHandler.
 
 In order to run our tests, we first need a test runner.
 *)
 
-#load "Koans.fsx"
-
 open System.Net.Http
 open System.Web.Http
 open System.Threading.Tasks
+open Koans.Core
 open Swensen.Unquote.Assertions
 
-module ``Respond to a GET request with a DelegatingHandler`` =
+let ``Respond to a GET request with a DelegatingHandler``() =
 
   // Now we can create an `HttpHandler` to return a response of `"Hello, world!"`.
   // `HttpMessageHandler`s always return a `Task<'T>` from the `SendAsync` method,
@@ -45,4 +45,4 @@ module ``Respond to a GET request with a DelegatingHandler`` =
     test <@ __ = body @>
   } |> Async.RunSynchronously
 
-cleanup()
+  reset()
