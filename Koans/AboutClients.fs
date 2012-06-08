@@ -1,4 +1,4 @@
-﻿module Koans.AboutClients
+﻿namespace Koans
 (* Lesson 4: Consume APIs with HttpClient
 
 You consume web apis with the `System.Net.Http.HttpClient`. This type provides methods
@@ -9,5 +9,13 @@ look at how you can consume apis and leverage the power of
 *)
 
 open System.Net.Http
+open FSharpKoans.Core
 open Koans.Core
 open Swensen.Unquote.Assertions
+
+[<Koan(Sort = 4)>]
+module ``about clients`` =
+  
+  [<Koan>]
+  let ``placeholder``() =
+    test <@ false @>

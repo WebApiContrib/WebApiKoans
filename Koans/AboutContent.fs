@@ -1,4 +1,4 @@
-﻿module Koans.AboutContent
+﻿namespace Koans
 (* Lesson 1: Learn about HttpContent and MediaTypeFormatters
 
 The body of the request and response can take many forms.
@@ -9,46 +9,50 @@ based on the provided `MediaTypeFormatter`.
 *)
 
 open System.Net.Http
+open FSharpKoans.Core
 open Koans.Core
 open Newtonsoft.Json.Linq
 open Swensen.Unquote.Assertions
 
-[<Koan>]
-let ``Reading string content``() =
+[<Koan(Sort = 1)>]
+module ``about content`` =
 
-  // Arguably the simplest of the `HttpContent` types is `StringContent`.
-  // You create a new `StringContent` in the normal way you create .NET instances.
-  // Note that in F# you need to use the `new` keyword because HttpContent
-  // implements `IDisposable`.
-  let content = new StringContent("Hello, string!")
+  [<Koan>]
+  let ``Reading string content``() =
 
-  // `HttpContent` contains many methods and extension methods for reading its data.
-  // All the read methods are asynchronous, as they are generally intended to read
-  // data from a network stream. Here we will read the string content back out
-  // using `ReadAsStringAsync`.
-  let result = content.ReadAsStringAsync()
-  
-  // Verify that the data we read was the same as we submitted to the `StringContent`.
-  async {
-    let! body = Async.AwaitTask result
-    test <@ __ = body @>
-  } |> Async.RunSynchronously
+    // Arguably the simplest of the `HttpContent` types is `StringContent`.
+    // You create a new `StringContent` in the normal way you create .NET instances.
+    // Note that in F# you need to use the `new` keyword because HttpContent
+    // implements `IDisposable`.
+    let content = new StringContent("Hello, string!")
 
-  reset()
+    // `HttpContent` contains many methods and extension methods for reading its data.
+    // All the read methods are asynchronous, as they are generally intended to read
+    // data from a network stream. Here we will read the string content back out
+    // using `ReadAsStringAsync`.
+    let result = content.ReadAsStringAsync()
+    
+    // Verify that the data we read was the same as we submitted to the `StringContent`.
+    async {
+      let! body = Async.AwaitTask result
+      test <@ __ = body @>
+    } |> Async.RunSynchronously
 
-[<Koan>]
-let ``Reading form data``() =
+    reset()
 
-  let content = new StringContent("a[]=1&a[]=5&a[]=333", System.Text.Encoding.UTF8, "application/x-www-form-urlencoded")
+  [<Koan>]
+  let ``Reading form data``() =
 
-//  let result = content.ReadAsFormDataAsync()
-  let result = content.ReadAsAsync<JObject>()
-  
-  // Verify that the data we read was the same as we submitted to the `StringContent`.
-  async {
-    let! body = Async.AwaitTask result
-    let arr = body.["a"] :?> JArray
-    test <@ __ = arr.ToString() @>
-  } |> Async.RunSynchronously
+    let content = new StringContent("a[]=1&a[]=5&a[]=333", System.Text.Encoding.UTF8, "application/x-www-form-urlencoded")
 
-  reset()
+  //  let result = content.ReadAsFormDataAsync()
+    let result = content.ReadAsAsync<JObject>()
+    
+    // Verify that the data we read was the same as we submitted to the `StringContent`.
+    async {
+      let! body = Async.AwaitTask result
+      let arr = body.["a"] :?> JArray
+      test <@ __ = arr.ToString() @>
+    } |> Async.RunSynchronously
+
+    reset()

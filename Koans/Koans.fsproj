@@ -42,13 +42,14 @@
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="(!Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')) And (!Exists('$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets')) And (Exists('$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets'))" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <ItemGroup>
-    <None Include="packages.config" />
     <Compile Include="Koans.fs" />
     <Compile Include="AboutContent.fs" />
     <Compile Include="AboutControllers.fs" />
     <Compile Include="AboutMessageHandlers.fs" />
     <Compile Include="AboutClients.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="PathToEnlightenment.fs" />
+    <None Include="packages.config" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ImpromptuInterface">
@@ -88,6 +89,13 @@
     <Reference Include="Unquote">
       <HintPath>..\packages\Unquote.2.2.1\lib\net40\Unquote.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FSharpKoans.Core\FsharpKoans.Core.fsproj">
+      <Name>FsharpKoans.Core</Name>
+      <Project>{71460aa5-7357-4f1c-99bc-54244b50b00e}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

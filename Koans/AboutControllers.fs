@@ -11,6 +11,7 @@ open System.IO
 open System.Net
 open System.Net.Http
 open System.Web.Http
+open FSharpKoans.Core
 open Koans.Core
 open Swensen.Unquote.Assertions
 
@@ -55,7 +56,8 @@ type TestFixedController() =
       new HttpResponseMessage(HttpStatusCode.OK, Content = content))
 
 [<AutoOpen>]
-module AboutControllers =
+[<Koan(Sort = 2)>]
+module ``about controllers`` =
 
   [<Koan>]
   let ``Simple Hello world controller``() =
