@@ -11,6 +11,16 @@ open FSharpKoans.Core
 open Koans.Core
 open Swensen.Unquote.Assertions
 
+// This type is defined in the [Frank](http://github.com/frank-fs/frank) library
+// and is intended to make the creation of DelegatingHandlers even simpler.
+type AsyncHandler =
+  inherit DelegatingHandler
+  val AsyncSend : HttpRequestMessage -> Async<HttpResponseMessage>
+  new (f, inner) = { inherit DelegatingHandler(inner); AsyncSend = f }
+  new (f) = { inherit DelegatingHandler(); AsyncSend = f }
+  override x.SendAsync(request, cancellationToken) =
+    Async.StartAsTask(x.AsyncSend request, cancellationToken = cancellationToken)
+
 [<Koan(Sort = 3)>]
 module ``about message handlers`` =
 

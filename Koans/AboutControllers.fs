@@ -15,6 +15,9 @@ open FSharpKoans.Core
 open Koans.Core
 open Swensen.Unquote.Assertions
 
+// Note that while we use a `client` to run the tests below, we'll address `System.Net.Http.HttpClient`
+// in greater detail in `AboutClients`.
+
 // To use an ApiController, you need to define a subclass.
 // We will extend and reuse this type throughout this set of koans.
 type TestController() =
