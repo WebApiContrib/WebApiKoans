@@ -47,12 +47,13 @@ let serializationHandler =
           response.Content <- convertToStreamContent(response.Content)
           response), cancellationToken) }
 
-let config = new HttpConfiguration()
-let server = new HttpServer(config)
+let server = new HttpServer()
+let config = server.Configuration
 let client = new HttpMessageInvoker(server)
 let cts = new System.Threading.CancellationTokenSource()
 
 let reset() =
+  config.MessageHandlers.Clear()
   config.Routes.Clear()
 
 let cleanup() =
