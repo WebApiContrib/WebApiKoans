@@ -1,23 +1,5 @@
 ﻿module Koans.Core
 
-#if INTERACTIVE
-#I @"..\packages\Microsoft.Net.Http.2.0.20505.0\lib\net40"
-#I @"..\packages\Microsoft.AspNet.WebApi.Core.4.0.20505.0\lib\net40"
-#I @"..\packages\Microsoft.AspNet.WebApi.Client.4.0.20505.0\lib\net40"
-#I @"..\packages\ImpromptuInterface.5.6.7\lib\net40"
-#I @"..\packages\ImpromptuInterface.FSharp.1.1.0\lib\net40"
-#I @"..\packages\Newtonsoft.Json.4.5.6\lib\net40"
-#I @"..\packages\Unquote.2.2.1\lib\net40"
-
-#r "System.Net.Http.dll"
-#r "System.Net.Http.Formatting.dll"
-#r "System.Web.Http.dll"
-#r "ImpromptuInterface.dll"
-#r "ImpromptuInterface.FSharp.dll"
-#r "Newtonsoft.Json.dll"
-#r "Unquote.dll"
-#endif
-
 open System
 open System.Collections.Generic
 open System.Net.Http
