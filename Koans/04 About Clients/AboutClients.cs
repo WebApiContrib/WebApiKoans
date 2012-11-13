@@ -49,13 +49,13 @@ namespace Koans
         }
 
         [Koan]
-        public static async void SendRequestAndGetResponse()
+        public static void SendRequestAndGetResponse()
         {
             AddHandler(request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
             using (var request = new HttpRequestMessage(HttpMethod.Get, "http://anything/api"))
-            using (var response = await client.SendAsync(request))
+            using (var response = client.SendAsync(request).Result)
             {
-                var result = await response.Content.ReadAsStringAsync();
+                var result = response.Content.ReadAsStringAsync().Result;
                 Helpers.AssertEquality(Helpers.__, result);
             }
 
@@ -63,13 +63,13 @@ namespace Koans
         }
 
         [Koan]
-        public static async void GetStringAsynchronously()
+        public static void GetStringAsynchronously()
         {
             AddHandler(request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
             // Rather than creating a request ourselves, we can use the `GetAsync` method.
-            using (var response = await client.GetAsync("http://anything/api"))
+            using (var response = client.GetAsync("http://anything/api").Result)
             {
-                var result = await response.Content.ReadAsStringAsync();
+                var result = response.Content.ReadAsStringAsync().Result;
                 Helpers.AssertEquality(Helpers.__, result);
             }
 

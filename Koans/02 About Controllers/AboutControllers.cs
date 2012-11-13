@@ -76,7 +76,7 @@ namespace Koans
     public static class AboutControllers
     {
         [Koan]
-        public static async void SimpleHelloWorldController()
+        public static void SimpleHelloWorldController()
         {
             // Controllers can't be found without routing. Here, we use a very generic
             // uri template and map it using the `MapHttpRoute` extension method.
@@ -86,24 +86,24 @@ namespace Koans
 
             // Now send a GET request from the client to retrieve the result.
             using (var request = new HttpRequestMessage(HttpMethod.Get, "http://example.org/api/test"))
-            using (var response = await Core.Client.SendAsync(request, Core.Cts.Token))
+            using (var response = Core.Client.SendAsync(request, Core.Cts.Token).Result)
             {
-                var body = await response.Content.ReadAsStringAsync();
+                var body = response.Content.ReadAsStringAsync().Result;
                 Helpers.AssertEquality("\"Hello, ApiController!\"", body);
             }
 
             Core.Reset();
         }
 
-        public static async void CreateAnEchoController()
+        public static void CreateAnEchoController()
         {
             Core.Config.Routes.MapHttpRoute("Api", "api/{controller}");
 
             // Now send a POST request from the client to retrieve the result.
             using (var request = new HttpRequestMessage(HttpMethod.Post, "http://example.org/api/test") { Content = new StringContent("Hello, ApiController!") })
-            using (var response = await Core.Client.SendAsync(request, Core.Cts.Token))
+            using (var response = Core.Client.SendAsync(request, Core.Cts.Token).Result)
             {
-                var body = await response.Content.ReadAsStringAsync();
+                var body = response.Content.ReadAsStringAsync().Result;
                 Helpers.AssertEquality("\"Hello, ApiController!\"", body);
                 Helpers.AssertEquality(Helpers.__, response.Content.Headers.ContentType.MediaType);
             }
@@ -111,15 +111,15 @@ namespace Koans
             Core.Reset();
         }
 
-        public static async void AreYouSureYouMadeAnEchoController()
+        public static void AreYouSureYouMadeAnEchoController()
         {
             Core.Config.Routes.MapHttpRoute("Api", "api/{controller}");
 
             // Now send a POST request from the client to retrieve the result.
             using (var request = new HttpRequestMessage(HttpMethod.Post, "http://example.org/api/testfixed") { Content = new StringContent("Hello, ApiController!") })
-            using (var response = await Core.Client.SendAsync(request, Core.Cts.Token))
+            using (var response = Core.Client.SendAsync(request, Core.Cts.Token).Result)
             {
-                var body = await response.Content.ReadAsStringAsync();
+                var body = response.Content.ReadAsStringAsync().Result;
                 Helpers.AssertEquality(Helpers.__, body);
                 // Note that this passes for a test of the request's content type as we copied the value above.
                 Helpers.AssertEquality(Helpers.__, response.Content.Headers.ContentType.MediaType);

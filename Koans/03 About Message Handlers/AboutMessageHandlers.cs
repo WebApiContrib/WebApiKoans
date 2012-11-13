@@ -85,7 +85,7 @@ namespace Koans
     public static class AboutMessageHandlers
     {
         [Koan]
-        public static async void RespondToGetRequestWithDelegatingHandler()
+        public static void RespondToGetRequestWithDelegatingHandler()
         {
             // Now we can create an `HttpHandler` to return a response of `"Hello, world!"`.
             // `HttpMessageHandler`s always return a `Task<'T>` from the `SendAsync` method,
@@ -115,8 +115,8 @@ namespace Koans
             // Now send a GET request from the client to retrieve the result.
             using (var request = new HttpRequestMessage(HttpMethod.Get, "http://example.org/api/test"))
             {
-                var response = await client.SendAsync(request, Core.Cts.Token);
-                var body = await response.Content.ReadAsStringAsync();
+                var response = client.SendAsync(request, Core.Cts.Token).Result;
+                var body = response.Content.ReadAsStringAsync().Result;
                 Helpers.AssertEquality(Helpers.__, body);
             }
 
