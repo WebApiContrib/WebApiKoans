@@ -56,8 +56,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="Unquote">
-      <HintPath>..\packages\Unquote.2.2.1\lib\net40\Unquote.dll</HintPath>
+    <Reference Include="Unquote, Version=2.2.0.0, Culture=neutral, PublicKeyToken=null">
       <Private>True</Private>
     </Reference>
   </ItemGroup>

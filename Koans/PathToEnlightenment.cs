@@ -4,10 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using FSharpKoans.Core;
-using Roslyn.Compilers;
-using Roslyn.Compilers.CSharp;
-using Roslyn.Services;
-using Roslyn.Services.CSharp;
 
 namespace Koans
 {

@@ -56,10 +56,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Roslyn.Compilers" />
-    <Reference Include="Roslyn.Compilers.CSharp" />
-    <Reference Include="Roslyn.Services" />
-    <Reference Include="Roslyn.Services.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AboutClients.cs" />
