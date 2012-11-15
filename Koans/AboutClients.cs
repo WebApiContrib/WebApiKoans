@@ -26,56 +26,95 @@ namespace Koans
     [Koan(Sort = 8)]
     public static class AboutClients
     {
-        // First things first: HttpClient is intended to be kept around for the life of your application.
-        // Starting up a client in every use is very expensive and can lead to bugs.
-        static readonly HttpClient client = new HttpClient(Core.Server);
+        // First things first: HttpClient is intended to be kept around for the life
+        // of your application. Starting up a client in every use is very expensive
+        // and can lead to bugs when running asynchronously.
+        // That said, we will ignore this for the following koans.
 
-        // We'll use message handlers to create koan-specific request handlers for each of the following koans.
-        // This option is the best for preventing collisions with the existing controller types, and it lets us
-        // specifically set the expectation within each koan. We'll define a helper here to return an instance
-        // of the `AsyncHandler` we saw in AboutMessageHandlers.
-        static void AddHandler(Func<HttpRequestMessage, HttpResponseMessage> f)
+        [Koan]
+        public static void GetStringAsynchronously()
         {
-            var handler = new DelegateHandler(f);
-            Core.Config.MessageHandlers.Add(handler);
-            Core.Config.Routes.MapHttpRoute("Api", "api");
-        }
+            using (var config = new HttpConfiguration())
+            using (var server = new HttpServer(config))
+            using (var client = new HttpClient(server))
+            {
+                AddHandler(config, request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
 
-        static void AddHandler(Func<HttpRequestMessage, Task<HttpResponseMessage>> f)
-        {
-            var handler = new DelegateHandler(f);
-            Core.Config.MessageHandlers.Add(handler);
-            Core.Config.Routes.MapHttpRoute("Api", "api");
+                // As we've done all along, e can use the `GetAsync` method.
+                // HttpClient has many, similar methods for other HTTP methods.
+                using (var response = client.GetAsync("http://anything/api").Result)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    Helpers.AssertEquality(Helpers.__, result);
+                }
+            }
         }
 
         [Koan]
         public static void SendRequestAndGetResponse()
         {
-            AddHandler(request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
-            using (var request = new HttpRequestMessage(HttpMethod.Get, "http://anything/api"))
-            using (var response = client.SendAsync(request).Result)
+            using (var config = new HttpConfiguration())
+            using (var server = new HttpServer(config))
+            using (var client = new HttpClient(server))
             {
-                var result = response.Content.ReadAsStringAsync().Result;
-                Helpers.AssertEquality(Helpers.__, result);
-            }
+                AddHandler(config, request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
 
-            Core.Reset();
+                // Of course, we can also create our own request message.
+                using (var request = new HttpRequestMessage(HttpMethod.Get, "http://anything/api"))
+                {
+                    // Creating your own request gives you finer grained control over what is sent.
+                    request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+
+                    // To send a request object, use SendAsync.
+                    using (var response = client.SendAsync(request).Result)
+                    {
+                        var result = response.Content.ReadAsStringAsync().Result;
+                        Helpers.AssertEquality(Helpers.__, result);
+                    }
+                }
+            }
         }
 
         [Koan]
-        public static void GetStringAsynchronously()
+        public static void SendRequestAndGetResponseWithCommonHeaders()
         {
-            AddHandler(request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
-            // Rather than creating a request ourselves, we can use the `GetAsync` method.
-            using (var response = client.GetAsync("http://anything/api").Result)
+            using (var config = new HttpConfiguration())
+            using (var server = new HttpServer(config))
+            using (var client = new HttpClient(server))
             {
-                var result = response.Content.ReadAsStringAsync().Result;
-                Helpers.AssertEquality(Helpers.__, result);
-            }
+                AddHandler(config, request => new HttpResponseMessage { Content = new StringContent("Hello, client!") });
 
-            Core.Reset();
+                // For common headers across all requests, you can simply modify
+                // the client's DefaultRequestHeaders and still use the GetAsync
+                // or similar method.
+                client.DefaultRequestHeaders.Accept.Add(
+                    new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+                using (var response = client.GetAsync("http://anything/api").Result)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    Helpers.AssertEquality(Helpers.__, result);
+                }
+            }
         }
 
         // TODO: Other methods, such as PostAsync, etc.
+
+        // We'll use message handlers to create koan-specific request handlers for each of the following koans.
+        // This option is the best for preventing collisions with the existing controller types, and it lets us
+        // specifically set the expectation within each koan. We'll define a helper here to return an instance
+        // of the `AsyncHandler` we saw in AboutMessageHandlers.
+        static void AddHandler(HttpConfiguration config, Func<HttpRequestMessage, HttpResponseMessage> f)
+        {
+            var handler = new DelegateHandler(f);
+            config.MessageHandlers.Add(handler);
+            config.Routes.MapHttpRoute("Api", "api");
+        }
+
+        static void AddHandler(HttpConfiguration config, Func<HttpRequestMessage, Task<HttpResponseMessage>> f)
+        {
+            var handler = new DelegateHandler(f);
+            config.MessageHandlers.Add(handler);
+            config.Routes.MapHttpRoute("Api", "api");
+        }
     }
 }
