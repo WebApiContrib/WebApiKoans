@@ -194,22 +194,23 @@ namespace Koans
 
     public class HeadMessageHandler : DelegatingHandler
     {
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            HttpResponseMessage response;
+
             if (request.Method == HttpMethod.Head)
             {
                 request.Method = HttpMethod.Get;
-                return base.SendAsync(request, cancellationToken)
-                    .ContinueWith<HttpResponseMessage>(task =>
-                    {
-                        var response = task.Result;
-                        response.RequestMessage.Method = HttpMethod.Head;
-                        response.Content = new HeadContent(response.Content);
-                        return task.Result;
-                    });
+                response = await base.SendAsync(request, cancellationToken);
+                if (response.RequestMessage == null)
+                    response.RequestMessage = request;
+                response.RequestMessage.Method = HttpMethod.Head;
+                response.Content = new HeadContent(response.Content);
+                return response;
             }
 
-            return base.SendAsync(request, cancellationToken);
+            response = await base.SendAsync(request, cancellationToken);
+            return response;
         }
     }
 
@@ -227,7 +228,6 @@ namespace Koans
             return tcs.Task;
         }
 
-
         protected override bool TryComputeLength(out long length)
         {
             length = -1;
@@ -236,7 +236,6 @@ namespace Koans
 
         private static void CopyHeaders(HttpContentHeaders fromHeaders, HttpContentHeaders toHeaders)
         {
-
             foreach (KeyValuePair<string, IEnumerable<string>> header in fromHeaders)
             {
                 toHeaders.Add(header.Key, header.Value);
@@ -297,7 +296,11 @@ namespace Koans
     {
         public static void AddMapping(this IList<UriFormatExtensionMapping> mappings, string extension, string mediaType)
         {
-            mappings.Add(new UriFormatExtensionMapping { Extension = extension, MediaType = new MediaTypeWithQualityHeaderValue(mediaType) });
+            mappings.Add(new UriFormatExtensionMapping
+            {
+                Extension = extension,
+                MediaType = new MediaTypeWithQualityHeaderValue(mediaType)
+            });
         }
     }
 }
