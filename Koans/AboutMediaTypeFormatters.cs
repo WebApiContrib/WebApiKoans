@@ -1,25 +1,67 @@
 ﻿using System;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization;
 using System.Text;
-using System.Web.Http;
 using FSharpKoans.Core;
 
 namespace Koans
 {
-    [Koan(Sort = 4)]
-    public static partial class AboutMediaTypeFormatters
+    /**
+     * Lesson 4: About MediaTypeFormatters
+     * 
+     * The built-in HttpContent types are handy, but they can't do everything.
+     * What happens when you need to serialize data? Sure, you could instantiate
+     * a serializer and do the work yourself. However, HTTP allows for content
+     * negotiation, so you don't always know which serializer you'll need.
+     * 
+     * Rather than requiring you to build your own factory, Web API provides an
+     * abstraction to select the appropriate serializer, or formatter, based
+     * on the specified media type. We'll delve into the specifics of content
+     * negotiation in the next section. For now, we will look at MediaTypeFormatters.
+     * 
+     * In order to exercise the formatters, we'll use another HttpContent: ObjectContent.
+     * ObjectContent provides a generic content host that accepts a value and a
+     * MediaTypeFormatter and formats the value with that formatter.
+     */
+
+    // A simple person class for use in learning about formatters.
+    [DataContract]
+    public class Person
     {
-        // JSON formatter
+        [DataMember] public string FirstName { get; set; }
+        [DataMember] public string LastName { get; set; }
+    }
 
-        // XML formatter
+    [Koan(Sort = 4)]
+    public static class AboutMediaTypeFormatters
+    {
+        [Koan]
+        public static void JsonFormatter()
+        {
+            var person = new Person { FirstName = "Glenn", LastName = "Block" };
+            var formatter = new JsonMediaTypeFormatter();
+            var content = new ObjectContent<Person>(person, formatter);
 
-        // FormUrlEncoded formatter
+            var body = content.ReadAsStringAsync().Result;
 
-        // Custom Formatter
+            Helpers.AssertEquality(Helpers.__, body);
+        }
+
+        [Koan]
+        public static void XmlFormatter()
+        {
+            var person = new Person { FirstName = "Glenn", LastName = "Block" };
+            var formatter = new XmlMediaTypeFormatter();
+            var content = new ObjectContent<Person>(person, formatter);
+
+            var body = content.ReadAsStringAsync().Result;
+
+            Helpers.AssertEquality(Helpers.__, body);
+        }
+
         [Koan]
         public static void PlainTextFormatter()
         {
@@ -83,11 +125,4 @@ namespace Koans
                 writer.Write(value);
         }
     }
-
-    public static partial class AboutMediaTypeFormatters
-    {
-        // Adding / Removing formatters
-    }
-
-    // Razor?
 }
