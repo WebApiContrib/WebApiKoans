@@ -34,14 +34,14 @@ namespace Koans
             // Send a GET message. The Web API API is asynchronous.
             // You should avoid calling .Result, but for testing,
             // this is desired. Fortunately, C# 5 helps deal with async.
-            using (var response = client.GetAsync(Helpers.__).Result)
+            using (var response = client.GetAsync("http://go.com/").Result)
             {
                 // We will use the Microsoft.AspNet.WebApi.Tracing package to print
                 // trace information from Web API. Check your output window so see
                 // how Web API works.
                 TraceConfig.Register(config);
 
-                Helpers.AssertEquality(HttpStatusCode.NotFound, response.StatusCode);
+                Helpers.AssertEquality(Helpers.__, response.StatusCode);
             }
         }
 
