@@ -46,7 +46,7 @@ namespace Koans
         public PlainTextBufferedFormatter()
         {
             // Set supported media type for this media type formatter
-            SupportedMediaTypes.Add(new MediaTypeHeaderValue(Helpers.__);
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue(Helpers.__));
 
             // Set default supported character encodings for this media type formatter (UTF-8 and UTF-16)
             SupportedEncodings.Add(new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true));
