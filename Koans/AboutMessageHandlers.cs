@@ -13,7 +13,7 @@ namespace Koans
      */
 
     [Koan(Sort = 7)]
-    public static class AboutMessageHandlers
+    public static partial class AboutMessageHandlers
     {
         [Koan]
         public static void RespondToGetRequestWithDelegatingHandler()
@@ -29,29 +29,20 @@ namespace Koans
                 return tcs.Task;
             });
 
-            // Set up the configuration for the server.
-            var config = new HttpConfiguration();
-
-            // Add our message handler to the configuration.
-            config.MessageHandlers.Add(handler);
-
-            // Create the server and set its configuration and the message handler.
-            // Note that the HttpServer ctor also takes a message handler,
-            // but that handler changes how the server behaves. We'll use the
-            var server = new HttpServer(config);
-
-            // Create an `HttpClient` that will send directly to the `server`.
-            var client = new HttpClient(server);
-
-            // Now send a GET request from the client to retrieve the result.
-            using (var request = new HttpRequestMessage(HttpMethod.Get, "http://example.org/api/test"))
+            using (var config = new HttpConfiguration())
+            using (var server = new HttpServer(config))
+            using (var client = new HttpClient(server))
             {
-                var response = client.SendAsync(request, Core.Cts.Token).Result;
-                var body = response.Content.ReadAsStringAsync().Result;
-                Helpers.AssertEquality(Helpers.__, body);
-            }
+                // Add our message handler to the configuration.
+                config.MessageHandlers.Add(handler);
+                config.Routes.MapHttpRoute("Api", "api");
 
-            Core.Reset();
+                using (var response = client.GetAsync("http://go.com/api").Result)
+                {
+                    var body = response.Content.ReadAsStringAsync().Result;
+                    Helpers.AssertEquality(Helpers.__, body);
+                }
+            }
         }
     }
 
@@ -119,5 +110,10 @@ namespace Koans
         {
             return _sendAsync(request, cancellationToken);
         }
+    }
+
+    public static partial class AboutMessageHandlers
+    {
+        // Multiple handlers
     }
 }
