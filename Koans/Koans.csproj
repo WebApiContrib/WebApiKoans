@@ -72,6 +72,9 @@
     <Reference Include="System.Web.Http.OData">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.OData.0.2.0-alpha\lib\net40\System.Web.Http.OData.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Http.Tracing">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Tracing.0.2.0-alpha\lib\net40\System.Web.Http.Tracing.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -93,6 +96,7 @@
     <Compile Include="AboutControllers.cs" />
     <Compile Include="AboutModelBinding.cs" />
     <Compile Include="AboutOData.cs" />
+    <Compile Include="App_Start\TraceConfig.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="PathToEnlightenment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
