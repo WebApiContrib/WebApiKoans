@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.IO;
+using System.Net.Http;
 using System.Text;
 using FSharpKoans.Core;
 using Newtonsoft.Json.Linq;
@@ -10,9 +11,8 @@ namespace Koans
      * 
      * The body of the request and response can take many forms.
      * `System.Net.Http` defines `HttpContent` as the base for these representations.
-     * `System.Net.Http` also includes several other built-in types,
-     * as well as an `ObjectContent` that will serialize any .NET object
-     * based on the provided `MediaTypeFormatter`.
+     * `System.Net.Http` also includes several other built-in types, such as:
+     * StringContent, StreamContent, and ByteArrayContent.
      */
 
     [Koan(Sort = 3)]
@@ -35,8 +35,6 @@ namespace Koans
             
             // Verify that the data we read was the same as we submitted to the `StringContent`.
             Helpers.AssertEquality(Helpers.__, body);
-
-            Core.Reset();
         }
 
         [Koan]
@@ -50,8 +48,33 @@ namespace Koans
             // Verify that the data we read was the same as we submitted to the `StringContent`.
             var arr = (JArray)body["a"];
             Helpers.AssertEquality(Helpers.__, arr.ToString()); 
+        }
 
-            Core.Reset();
+        [Koan]
+        public static void UsingByteArrayContent()
+        {
+            // ByteArrayContent is hardly different than StringContent,
+            // but it can be more convenient for lower-level operations
+            // when bytes are already available (as opposed to using a Stream).
+            var bytes = Encoding.ASCII.GetBytes(Helpers.__);
+            var content = new ByteArrayContent(bytes); // This also takes offset and limit parameters.
+
+            var body = content.ReadAsStringAsync().Result;
+
+            Helpers.AssertEquality("Hello, bytes!", body);
+        }
+
+        [Koan]
+        public static void UsingStreamContent()
+        {
+            // When you have a stream of data, StreamContent is your best bet.
+            var bytes = Encoding.ASCII.GetBytes(Helpers.__);
+            var stream = new MemoryStream(bytes);
+            var content = new StreamContent(stream);
+
+            var body = content.ReadAsStringAsync().Result;
+
+            Helpers.AssertEquality("Hello, stream!", body);
         }
     }
 }
