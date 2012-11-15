@@ -71,6 +71,7 @@ namespace Koans
 
     public static partial class AboutControllers
     {
+        [Koan]
         public static void CreateAnEchoController()
         {
             using (var config = new HttpConfiguration())
@@ -105,6 +106,7 @@ namespace Koans
 
     public static partial class AboutControllers
     {
+        [Koan]
         public static void AreYouSureYouMadeAnEchoController()
         {
             using (var config = new HttpConfiguration())
