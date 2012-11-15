@@ -24,21 +24,18 @@ namespace Koans
             // Create a configuration. Web API uses a code-based configuration
             // rather than the XML-based configuration familiar to WCF programmers.
             using (var config = new HttpConfiguration())
-                // Create an HttpServer. HttpServer is the core for all other server
-                // implementations. We'll discuss this in more detail later.
+            // Create an HttpServer. HttpServer is the core for all other server
+            // implementations. We'll discuss this in more detail later.
             using (var server = new HttpServer(config))
-                // Create an HttpClient. HttpClient can be used without the server
-                // to hit the public web, but passing in a server will allow you
-                // direct access.
+            // Create an HttpClient. HttpClient can be used without the server
+            // to hit the public web, but passing in a server will allow you
+            // direct access.
             using (var client = new HttpClient(server))
-            {
-                // Send a GET message. The Web API API is asynchronous.
-                // You should avoid calling .Result, but for testing,
-                // this is desired. Fortunately, C# 5 helps deal with async.
-                var response = client.GetAsync(Helpers.__).Result;
-
+            // Send a GET message. The Web API API is asynchronous.
+            // You should avoid calling .Result, but for testing,
+            // this is desired. Fortunately, C# 5 helps deal with async.
+            using (var response = client.GetAsync(Helpers.__).Result)
                 Helpers.AssertEquality(HttpStatusCode.NotFound, response.StatusCode);
-            }
         }
 
         [Koan]
@@ -54,9 +51,8 @@ namespace Koans
                 // We'll explore routing further a little later.
                 config.Routes.MapHttpRoute("Default", "api");
 
-                var response = client.GetAsync("http://go.com/api").Result;
-
-                Helpers.AssertEquality(Helpers.__, response.StatusCode);
+                using (var response = client.GetAsync("http://go.com/api").Result)
+                    Helpers.AssertEquality(Helpers.__, response.StatusCode);
             }
         }
 
@@ -76,9 +72,8 @@ namespace Koans
                 // but for now we will add an HttpMessageHandler for simplicity.
                 config.MessageHandlers.Add(new OkHandler());
 
-                var response = client.GetAsync("http://go.com/api").Result;
-
-                Helpers.AssertEquality(Helpers.__, response.StatusCode);
+                using (var response = client.GetAsync("http://go.com/api").Result)
+                    Helpers.AssertEquality(Helpers.__, response.StatusCode);
             }
         }
 
@@ -112,14 +107,16 @@ namespace Koans
                 config.Routes.MapHttpRoute("Default", "api");
                 config.MessageHandlers.Add(new HelloHandler());
 
-                var response = client.GetAsync("http://go.com/api").Result;
-                // In addition to getting the response message, you need
-                // to also retrieve the content. Each message object has a
-                // Content property and methods to read the contents.
-                // We will look more into these in AboutContent.
-                var body = response.Content.ReadAsStringAsync();
+                using (var response = client.GetAsync("http://go.com/api").Result)
+                {
+                    // In addition to getting the response message, you need
+                    // to also retrieve the content. Each message object has a
+                    // Content property and methods to read the contents.
+                    // We will look more into these in AboutContent.
+                    var body = response.Content.ReadAsStringAsync().Result;
 
-                Helpers.AssertEquality(Helpers.__, body);
+                    Helpers.AssertEquality("Hello, world!", body);
+                }
             }
         }
 
@@ -132,7 +129,7 @@ namespace Koans
                     // AboutContent will address the various types of HttpContent.
                     // For now, you may note that the HttpResponseMessage
                     // has a Content property that will accept such a type.
-                    Content = new StringContent("Hello, world!")
+                    Content = new StringContent(Helpers.__)
                 };
 
                 var tcs = new TaskCompletionSource<HttpResponseMessage>();
