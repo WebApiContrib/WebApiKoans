@@ -24,6 +24,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                // Make sure to turn on query support!
+                config.EnableQuerySupport();
                 config.Routes.MapHttpRoute(
                     name: "Api",
                     routeTemplate: "api/{controller}"
@@ -84,6 +86,7 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                config.EnableQuerySupport();
                 config.Routes.MapHttpRoute(
                     name: "Api",
                     routeTemplate: "api/{controller}"
@@ -145,6 +148,7 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                config.EnableQuerySupport();
                 config.Routes.MapHttpRoute(
                     name: "Api",
                     routeTemplate: "api/{controller}"
