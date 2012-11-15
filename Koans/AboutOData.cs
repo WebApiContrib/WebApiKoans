@@ -24,6 +24,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
+
                 // Make sure to turn on query support!
                 config.EnableQuerySupport();
                 config.Routes.MapHttpRoute(
@@ -86,6 +88,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
+
                 config.EnableQuerySupport();
                 config.Routes.MapHttpRoute(
                     name: "Api",
@@ -148,6 +152,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
+
                 config.EnableQuerySupport();
                 config.Routes.MapHttpRoute(
                     name: "Api",

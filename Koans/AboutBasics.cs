@@ -35,7 +35,14 @@ namespace Koans
             // You should avoid calling .Result, but for testing,
             // this is desired. Fortunately, C# 5 helps deal with async.
             using (var response = client.GetAsync(Helpers.__).Result)
+            {
+                // We will use the Microsoft.AspNet.WebApi.Tracing package to print
+                // trace information from Web API. Check your output window so see
+                // how Web API works.
+                TraceConfig.Register(config);
+
                 Helpers.AssertEquality(HttpStatusCode.NotFound, response.StatusCode);
+            }
         }
 
         [Koan]
@@ -45,6 +52,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
+
                 // In order to get anything other than a 404 response,
                 // you first must add a route on the configuration.
                 // Note how similar routing is to routing in MVC.
@@ -63,6 +72,7 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
                 config.Routes.MapHttpRoute("Default", "api");
 
                 // A route alone is insufficient to get past the 404.
@@ -104,6 +114,7 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
                 config.Routes.MapHttpRoute("Default", "api");
                 config.MessageHandlers.Add(new HelloHandler());
 

@@ -26,6 +26,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
+
                 // Controllers are identified through the routing mechanism.
                 // Web API includes a convenient extension method to the
                 // HttpRouteCollection type, which is exposed as the
@@ -75,6 +77,7 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
                 config.Routes.MapHttpRoute("Api", "api/{controller}");
 
                 // Now send a POST request from the client to retrieve the result.
@@ -108,6 +111,7 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
                 config.Routes.MapHttpRoute("Api", "api/{controller}");
 
                 var uri = "http://example.org/api/testfixed";

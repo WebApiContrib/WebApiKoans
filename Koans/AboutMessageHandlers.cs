@@ -33,6 +33,8 @@ namespace Koans
             using (var server = new HttpServer(config))
             using (var client = new HttpClient(server))
             {
+                TraceConfig.Register(config);
+
                 // Add our message handler to the configuration.
                 config.MessageHandlers.Add(handler);
                 config.Routes.MapHttpRoute("Api", "api");
