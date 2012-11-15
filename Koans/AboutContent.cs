@@ -1,7 +1,5 @@
 ﻿using System.Net.Http;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using FSharpKoans.Core;
 using Newtonsoft.Json.Linq;
 
@@ -16,7 +14,7 @@ namespace Koans
     based on the provided `MediaTypeFormatter`.
     */
 
-    [Koan(Sort = 1)]
+    [Koan(Sort = 3)]
     public static class AboutContent
     {
         [Koan]

@@ -1,26 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using FSharpKoans.Core;
 
 namespace Koans
 {
-    /* Lesson 2: Build APIs with ApiControllers
-
-    The standard api for building applications with Web API
-    is through the ApiController. This implements the IHttpController
-    interface and provides a number of additional helpers such
-    as model binding and formatting.
-    */
-
-    // Note that while we use a `client` to run the tests below, we'll address `System.Net.Http.HttpClient`
-    // in greater detail in `AboutClients`.
+    /**
+     * Lesson 2: Build APIs with ApiControllers
+     * 
+     * The standard api for building applications with Web API
+     * is through the ApiController. This implements the IHttpController
+     * interface and provides a number of additional helpers such
+     * as model binding and formatting.
+     */
 
     // To use an ApiController, you need to define a subclass.
     // We will extend and reuse this type throughout this set of koans.
