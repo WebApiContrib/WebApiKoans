@@ -10,7 +10,7 @@ using FSharpKoans.Core;
 
 namespace Koans
 {
-    [Koan(Sort = 10)]
+    [Koan(Sort = 9)]
     public static partial class AboutOData
     {
         // This sample customer controller demonstrates how to create

@@ -7,9 +7,13 @@ using FSharpKoans.Core;
 
 namespace Koans
 {
-    [Koan(Sort = 5)]
-    public static class AboutContentNegotiation
+    [Koan(Sort = 4)]
+    public static class AboutMediaTypeFormatters
     {
-        // Manual content negotiation
+        // Custom Formatter
+
+        // Adding / Removing formatters
+
+        // Razor?
     }
 }

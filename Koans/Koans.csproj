@@ -80,6 +80,7 @@
     <Compile Include="AboutBasics.cs" />
     <Compile Include="AboutClients.cs" />
     <Compile Include="AboutContentNegotiation.cs" />
+    <Compile Include="AboutMediaTypeFormatters.cs" />
     <Compile Include="AboutMessageHandlers.cs" />
     <Compile Include="AboutContent.cs" />
     <Compile Include="AboutControllers.cs" />

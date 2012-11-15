@@ -10,7 +10,7 @@ using FSharpKoans.Core;
 
 namespace Koans
 {
-    /* Lesson 4: Consume APIs with HttpClient
+    /* Lesson 8: Consume APIs with HttpClient
 
     We've already used a `client` to pass a request and receive a response in order to learn
     about controllers and message handlers. We used the simplest possible approach to get
@@ -23,7 +23,7 @@ namespace Koans
     [F# Active Patterns](http://msdn.microsoft.com/en-us/library/dd233248.aspx).
     */
 
-    [Koan(Sort = 4)]
+    [Koan(Sort = 8)]
     public static class AboutClients
     {
         // First things first: HttpClient is intended to be kept around for the life of your application.
