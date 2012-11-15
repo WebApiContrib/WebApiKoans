@@ -58,10 +58,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="04 About Clients\AboutClients.cs" />
-    <Compile Include="01 About Content\AboutContent.cs" />
-    <Compile Include="02 About Controllers\AboutControllers.cs" />
-    <Compile Include="03 About Message Handlers\AboutMessageHandlers.cs" />
+    <Compile Include="AboutAsserts.cs" />
+    <Compile Include="AboutClients.cs" />
+    <Compile Include="AboutMessageHandlers.cs" />
+    <Compile Include="AboutContent.cs" />
+    <Compile Include="AboutControllers.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="PathToEnlightenment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
