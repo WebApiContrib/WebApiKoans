@@ -98,6 +98,7 @@
     <Compile Include="AboutModelBinding.cs" />
     <Compile Include="AboutOData.cs" />
     <Compile Include="App_Start\TraceConfig.cs" />
+    <Compile Include="GlobalConfiguration.cs" />
     <Compile Include="PathToEnlightenment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
